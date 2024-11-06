@@ -30,7 +30,7 @@ class Estate(Property):
             estate_type_cz = "Les"
         elif self.estate_type == "garden":
             estate_type_cz = "Zahrada"
-        return f" {estate_type_cz}, lokalita {self.locality.name} (koeficient {self.locality.locality_coefficient}), {self.area} metrů čtverečních, daň {self.calculate_tax()} Kč."
+        return f"{estate_type_cz}, lokalita {self.locality.name} (koeficient {self.locality.locality_coefficient}), {self.area} metrů čtverečních, daň {self.calculate_tax()} Kč."
     def calculate_tax(self):
         if self.estate_type == "land":
             estate_coefficient = 0.85
@@ -60,16 +60,19 @@ class Rezidence(Property):
             estate_type_cz = "Komerční"
         else:
             estate_type_cz = "Rezidenční"
-        return f" {estate_type_cz} prostor, lokalita {self.locality.name} (koeficient {self.locality.locality_coefficient}), {self.area} metrů čtverečních, daň {self.calculate_tax()} Kč."
+        return f"{estate_type_cz} prostor, lokalita {self.locality.name} (koeficient {self.locality.locality_coefficient}), {self.area} metrů čtverečních, daň {self.calculate_tax()} Kč."
 
-# class TaxReport:
-#     def __init__(self, name):
-#         self.name = name
-#         self.property_list = []
-#     def add_property(self, property):
-#         self.property_list.append(property)
-
-
+class TaxReport:
+    def __init__(self, name):
+        self.name = name
+        self.property_list = []
+    def add_property(self, property):
+        self.property_list.append(property)
+    def calculate_total_tax(self):
+        total_tax = 0
+        for item in self.property_list:
+            total_tax += item.calculate_tax()
+        return f"Celková daň za všechny nemovitosti je {total_tax} Kč."
 
 
 manetin = Locality("Manětín", 0.8)
@@ -77,11 +80,14 @@ brno = Locality("Brno", 3)
 pozemek_1 = Estate(manetin, "land", 900)
 dum_1 = Rezidence(manetin, 120, False)
 komerce_1 = Rezidence(brno, 90, True)
+priznani_1 = TaxReport("Honza")
 print(pozemek_1.calculate_tax())
 print(dum_1.calculate_tax())
 print(pozemek_1.locality.locality_coefficient)
 print(pozemek_1)
 print(dum_1)
 print(komerce_1)
-print(dum_1)
-
+priznani_1.add_property(dum_1)
+priznani_1.add_property(komerce_1)
+priznani_1.add_property(pozemek_1)
+print(priznani_1.calculate_total_tax())
